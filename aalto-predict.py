@@ -160,6 +160,13 @@ def average_results(rr):
 
     return res
 
+def show_result(i, r0, e0, r1, e1, target):
+    if target=='both':
+        print('{} max correlations short={:8.6f} (epoch {:d}) long={:8.6f} (epoch {:d})'.
+              format(i, r0, e0, r1, e1))
+    else:
+        print('{} max correlation {}={:8.6f} (epoch {:d})'.format(i, target, r0, e0))
+
         
 def main(args, vid, data_x, data_y):    
     global device
@@ -202,27 +209,15 @@ def main(args, vid, data_x, data_y):
         r = train_one(args, i, t_x, t_y, v_x, v_y, epochs, val_interval)
         res.append(r)
         r0, e0, r1, e1 = solve_max(r)
-        if target=='both':
-            print('{} max correlations short={:8.6f} (epoch {:d}) long={:8.6f} (epoch {:d})'.
-                  format(i, r0, e0, r1, e1))
-        else:
-            print('{} max correlation {}={:8.6f} (epoch {:d})'.format(i, target, r0, e0))
+        show_result(i, r0, e0, r1, e1, target)
 
     avg = average_results(res)
     r0, e0, r1, e1 = solve_max(avg)
-    if target=='both':
-        print('{} max correlations short={:8.6f} (epoch {:d}) long={:8.6f} (epoch {:d})'.
-              format('AVG', r0, e0, r1, e1))
-    else:
-        print('{} max correlation {}={:8.6f} (epoch {:d})'.format('AVG', target, r0, e0))
+    show_result('AVER.', r0, e0, r1, e1, target)
 
     r = train_one(args, 0, train_x, train_y, val_x, val_y, e0, e0)
     r0, e0, r1, e1 = solve_max(r)
-    if target=='both':
-        print('{} max correlations short={:8.6f} (epoch {:d}) long={:8.6f} (epoch {:d})'.
-              format('FIN', r0, e0, r1, e1))
-    else:
-        print('{} max correlation {}={:8.6f} (epoch {:d})'.format('FIN', target, r0, e0))
+    show_result('FINAL', r0, e0, r1, e1, target)
     
         
 if __name__ == '__main__':
