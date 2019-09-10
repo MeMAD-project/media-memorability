@@ -28,7 +28,8 @@ def read_picsom_features(args):
     test   = picsom_class('picsom/classes/test')
 
     devi = sorted([ labels.index_by_label(i) for i in dev.objects() ])
-    
+
+    print('picsom_features =', args.picsom_features)
     fx = []
     ff = args.picsom_features.split(',')
     for f in ff:
@@ -56,7 +57,7 @@ def read_data(args):
     return (vid, data_x, data_y)
 
 
-def train_one(args, i, t_x, t_y, v_x, v_y, nepochs, val_interval):
+def train_one(args, i, t_x, t_y, v_x, v_y, nepochs, val_interval, target, output, v_f):
     D_in  = t_x.shape[1]
     H     = args.hidden_size
     D_out = t_y.shape[1]
@@ -65,6 +66,7 @@ def train_one(args, i, t_x, t_y, v_x, v_y, nepochs, val_interval):
         print('t_x =', t_x.shape, 't_y =', t_y.shape)
         print('v_x =', v_x.shape, 'v_y =', v_y.shape)
         print('network structure', D_in, H, D_out)
+        print('max epochs', nepochs)
     
     model = torch.nn.Sequential(
         torch.nn.Linear(D_in, H),
@@ -125,6 +127,17 @@ def train_one(args, i, t_x, t_y, v_x, v_y, nepochs, val_interval):
 
             res.append([t, r0, r1])
 
+            if output is not None and t>0:
+                tasks = ['short', 'long'] if target=='both' else [target]
+                for task in tasks:
+                    taskx = task if task=='long' else 'shor'
+                    csv = 'me18in_memad_'+taskx+'term_'+output+'.csv'
+                    p = p1 if D_out==2 and task=='long' else p0
+                    with open(csv, 'w') as fp:
+                        for i in range(len(p)):
+                            print(v_f[i]+','+str(p[i].item())+',1', file=fp)
+                    print('stored in <'+csv+'>') 
+    
     return res
 
 
@@ -171,7 +184,7 @@ def show_result(i, r0, e0, r1, e1, target):
 def main(args, vid, data_x, data_y):    
     global device
     device = torch.device('cuda' if torch.cuda.is_available() and not args.cpu else 'cpu')
-    
+
     target = args.target
     s = [target=='short' or target=='both', target=='long' or target=='both']
     print('data_x =', data_x.shape, 'data_y =', data_y.shape, 'target =', target)
@@ -181,15 +194,16 @@ def main(args, vid, data_x, data_y):
     assert ntrain>0 and nval>0, \
         'train-split {} {} does not make sense'.format(ntrain, nval)
 
-    dtype = torch.float
+    dtype   = torch.float
     train_x = torch.tensor(data_x[:ntrain,:], device=device, dtype=dtype)
     train_y = torch.tensor(data_y[:ntrain,s], device=device, dtype=dtype)
     val_x   = torch.tensor(data_x[-nval:,:],  device=device, dtype=dtype)
     val_y   = torch.tensor(data_y[-nval:,s],  device=device, dtype=dtype)
-
+    val_f   = vid[-nval:]
+    
     print('train_x =', train_x.shape, 'train_y =', train_y.shape)
     print('val_x =',   val_x.shape,   'val_y =',   val_y.shape)
-
+    
     epochs = args.epochs
     val_interval = args.val_interval
     nfolds = args.folds
@@ -206,7 +220,7 @@ def main(args, vid, data_x, data_y):
         t_y = train_y[r,:]
         v_x = train_x[s,:]
         v_y = train_y[s,:]
-        r = train_one(args, i, t_x, t_y, v_x, v_y, epochs, val_interval)
+        r = train_one(args, i, t_x, t_y, v_x, v_y, epochs, val_interval, None, None, None)
         res.append(r)
         r0, e0, r1, e1 = solve_max(r)
         show_result(i, r0, e0, r1, e1, target)
@@ -215,15 +229,28 @@ def main(args, vid, data_x, data_y):
     r0, e0, r1, e1 = solve_max(avg)
     show_result('AVER.', r0, e0, r1, e1, target)
 
-    r = train_one(args, 0, train_x, train_y, val_x, val_y, e0, e0)
+    r = train_one(args, 0, train_x, train_y, val_x, val_y, e0, e0, target, args.output, val_f)
     r0, e0, r1, e1 = solve_max(r)
     show_result('FINAL', r0, e0, r1, e1, target)
-    
+
         
 if __name__ == '__main__':
     # print(sys.version, torch.__version__)
+
+    pf_rn101   = 'c_in12_rn101_pool5o_d_a'
+    pf_rn152   = 'c_in12_rn152_pool5o_d_a'
+    pf_sun101  = 'sun-397-c_in12_rn101_pool5o_d_a'
+    pf_sun152  = 'sun-397-c_in12_rn152_pool5o_d_a'
+    pf_coco101 = 'coco-80-c_in12_rn101_pool5o_d_a'
+    pf_coco152 = 'coco-80-c_in12_rn152_pool5o_d_a'
     
-    picsom_def_feat = 'c_in12_rn152_pool5o_d_a,sun-397-c_in12_rn152_pool5o_d_a'
+    pf_rs     = ','.join([pf_rn152, pf_sun152])
+    pf_rsc    = ','.join([pf_rn152, pf_sun152, pf_coco152])
+    pf_rscc   = ','.join([pf_rn152, pf_sun152, pf_coco152, pf_coco101])
+    pf_rrss   = ','.join([pf_rn152, pf_rn101, pf_sun152, pf_sun101])
+    pf_rrsscc = ','.join([pf_rn152, pf_rn101, pf_sun152, pf_sun101, pf_coco152, pf_coco101])
+    picsom_def_feat = pf_rrsscc
+    
     parser = argparse.ArgumentParser()
     parser.add_argument('--cpu', action="store_true",
                         help="Use CPU even when GPU is available")
@@ -232,7 +259,7 @@ if __name__ == '__main__':
     parser.add_argument('--hidden_size', type=int, default=430,
                         help="Hidden layer size")
     parser.add_argument('--target', type=str, default='both',
-                        help="Predicted variable: short, long or both (default) ")
+                        help="Predicted variable: short, long or both (default)")
     parser.add_argument('--folds', type=int, default=10,
                         help="Number folds in cross-validation, default=10")
     parser.add_argument('--epochs', type=int, default=1000,
@@ -241,6 +268,8 @@ if __name__ == '__main__':
                         help="Interval between vaolidations, default=10")
     parser.add_argument('--picsom_features', type=str,
                         default=picsom_def_feat, help="PicSOM features used")
+    parser.add_argument('--output', type=str,
+                        default=None, help="output file for external evaluation")
     args = parser.parse_args()
 
     vid, data_x, data_y = read_data(args)
