@@ -57,7 +57,8 @@ def read_data(args):
     return (vid, data_x, data_y)
 
 
-def train_one(args, i, t_x, t_y, v_x, v_y, nepochs, val_interval, target, output, v_f):
+def train_one(args, i, t_x, t_y, v_x, v_y, nepochs, val_interval,
+              target, output, v_f):
     D_in  = t_x.shape[1]
     H     = args.hidden_size
     D_out = t_y.shape[1]
@@ -173,12 +174,12 @@ def average_results(rr):
 
     return res
 
-def show_result(i, r0, e0, r1, e1, target):
+def show_result(i, r0, e0, r1, e1, target, H):
     if target=='both':
-        print('{} max correlations short={:8.6f} (epoch {:d}) long={:8.6f} (epoch {:d})'.
-              format(i, r0, e0, r1, e1))
+        print('{} max correlations short={:8.6f} (epoch {:d}) long={:8.6f} (epoch {:d}) h={:d}'.
+              format(i, r0, e0, r1, e1, H))
     else:
-        print('{} max correlation {}={:8.6f} (epoch {:d})'.format(i, target, r0, e0))
+        print('{} max correlation {}={:8.6f} (epoch {:d}) h={:d}'.format(i, target, r0, e0, H))
 
         
 def main(args, vid, data_x, data_y):    
@@ -223,15 +224,15 @@ def main(args, vid, data_x, data_y):
         r = train_one(args, i, t_x, t_y, v_x, v_y, epochs, val_interval, None, None, None)
         res.append(r)
         r0, e0, r1, e1 = solve_max(r)
-        show_result(i, r0, e0, r1, e1, target)
+        show_result(i, r0, e0, r1, e1, target, args.hidden_size)
 
     avg = average_results(res)
     r0, e0, r1, e1 = solve_max(avg)
-    show_result('AVER.', r0, e0, r1, e1, target)
+    show_result('AVER.', r0, e0, r1, e1, target, args.hidden_size)
 
     r = train_one(args, 0, train_x, train_y, val_x, val_y, e0, e0, target, args.output, val_f)
     r0, e0, r1, e1 = solve_max(r)
-    show_result('FINAL', r0, e0, r1, e1, target)
+    show_result('FINAL', r0, e0, r1, e1, target, args.hidden_size)
 
         
 if __name__ == '__main__':
@@ -249,7 +250,7 @@ if __name__ == '__main__':
     pf_rscc   = ','.join([pf_rn152, pf_sun152, pf_coco152, pf_coco101])
     pf_rrss   = ','.join([pf_rn152, pf_rn101, pf_sun152, pf_sun101])
     pf_rrsscc = ','.join([pf_rn152, pf_rn101, pf_sun152, pf_sun101, pf_coco152, pf_coco101])
-    picsom_def_feat = pf_rrsscc
+    picsom_def_feat = pf_rrss
     
     parser = argparse.ArgumentParser()
     parser.add_argument('--cpu', action="store_true",
