@@ -23,9 +23,10 @@ torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 
 def read_picsom_features(args):
-    year   = '2019'
+    year   = '2020'
+    dev = 'dev' if year=='2019' else 'training'
     labels = picsom_label_index('picsom/'+year+'/meta/labels.txt')
-    dev    = picsom_class('picsom/'+year+'/classes/dev')
+    dev    = picsom_class('picsom/'+year+'/classes/'+dev)
     test   = picsom_class('picsom/'+year+'/classes/test')
 
     devi = sorted([ labels.index_by_label(i) for i in dev.objects() ])
@@ -40,28 +41,50 @@ def read_picsom_features(args):
     for f in ff:
         feat = picsom_bin_data('picsom/'+year+'/features/'+f+'.bin')
         fdat = np.array(feat.get_float_list(alli))
+        # print(year, f, fdat.shape)
         fx.append(fdat)
 
-    return np.concatenate(fx, axis=1)
-
+    if len(fx)>1:
+        return np.concatenate(fx, axis=1)
+    else:
+        return np.array(fx[0])
     
 def read_data(args):
+    year = '2020'
     vid    = []
     data_y = []
-    with open('ground-truth_dev-set.csv', newline='') as csvfile:
-        rows = csv.reader(csvfile, delimiter=',', quotechar='|')
-        for row in rows:
-            m = re.match('^(video.*webm).*$', row[0])
-            if m:
-                v = m.group(1)
-                vid.append(v)
-                data_y.append([ float(row[1]), float(row[3]) ])
 
-    with open('test-set_videos-captions.txt', newline='') as testset:
-        for row in testset:
-             m = re.match('^(video.*webm).*$', row)
-             if m:
-                 vid.append(m.group(1))
+    if year=='2019':
+        with open('data/2019/ground-truth_dev-set.csv', newline='') as csvfile:
+            rows = csv.reader(csvfile, delimiter=',', quotechar='|')
+            for row in rows:
+                m = re.match('^(video.*webm).*$', row[0])
+                if m:
+                    v = m.group(1)
+                    vid.append(v)
+                    data_y.append([ float(row[1]), float(row[3]) ])
+
+        with open('data/2019/test-set_videos-captions.txt', newline='') as testset:
+            for row in testset:
+                m = re.match('^(video.*webm).*$', row)
+                if m:
+                    vid.append(m.group(1))
+
+    else:
+        with open('data/2020/scores_v2.csv', newline='') as csvfile:
+            rows = csv.reader(csvfile, delimiter=',', quotechar='|')
+            for row in rows:
+                m = re.match('^\d+$', row[0])
+                if m:
+                    vid.append(row[1])
+                    data_y.append([ float(row[4]), float(row[5]) ])
+                    
+        with open('data/2020/test_urls.csv', newline='') as csvfile:
+            rows = csv.reader(csvfile, delimiter=',', quotechar='|')
+            for row in rows:
+                m = re.match('^\d+$', row[0])
+                if m:
+                    vid.append(row[1])
 
     data_y = np.array(data_y)
     data_x = read_picsom_features(args)
@@ -303,7 +326,8 @@ if __name__ == '__main__':
     pf_rrssi  = ','.join([pf_rn152, pf_rn101, pf_sun152, pf_sun101, pf_i3d])
     pf_rrsscc = ','.join([pf_rn152, pf_rn101, pf_sun152, pf_sun101, pf_coco152, pf_coco101])
     picsom_def_feat = pf_rrssi
-    
+    picsom_def_feat = pf_rn152
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--cpu', action="store_true",
                         help="Use CPU even when GPU is available")
