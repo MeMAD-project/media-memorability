@@ -23,9 +23,10 @@ torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 
 def read_picsom_features(args):
-    labels = picsom_label_index('picsom/meta/labels.txt')
-    dev    = picsom_class('picsom/classes/dev')
-    test   = picsom_class('picsom/classes/test')
+    year   = '2019'
+    labels = picsom_label_index('picsom/'+year+'/meta/labels.txt')
+    dev    = picsom_class('picsom/'+year+'/classes/dev')
+    test   = picsom_class('picsom/'+year+'/classes/test')
 
     devi = sorted([ labels.index_by_label(i) for i in dev.objects() ])
 
@@ -37,7 +38,7 @@ def read_picsom_features(args):
     fx = []
     ff = args.picsom_features.split(',')
     for f in ff:
-        feat = picsom_bin_data('picsom/features/'+f+'.bin')
+        feat = picsom_bin_data('picsom/'+year+'/features/'+f+'.bin')
         fdat = np.array(feat.get_float_list(alli))
         fx.append(fdat)
 
