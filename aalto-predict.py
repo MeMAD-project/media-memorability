@@ -7,6 +7,7 @@ import re
 import csv
 import argparse
 import sys
+import pickle
 
 #import matplotlib
 ## matplotlib.use('TkAgg')
@@ -22,6 +23,9 @@ torch.manual_seed(42)
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 
+folds_ids = pickle.load(open('folds_ids.pickle', 'br'))
+#print(folds_ids)
+
 def read_picsom_features(args):
     year   = '2020'
     dev = 'dev' if year=='2019' else 'training'
@@ -29,12 +33,16 @@ def read_picsom_features(args):
     dev    = picsom_class('picsom/'+year+'/classes/'+dev)
     test   = picsom_class('picsom/'+year+'/classes/test')
 
-    devi = sorted([ labels.index_by_label(i) for i in dev.objects() ])
+    # devi = sorted([ labels.index_by_label(i) for i in dev.objects() ])
 
     allobjects = dev.objects() | test.objects()
     
     alli = sorted([ labels.index_by_label(i) for i in allobjects ])
 
+    lab = []
+    for i in alli:
+        lab.append(labels.label_by_index(i))
+    
     print('picsom_features =', args.picsom_features)
     fx = []
     ff = args.picsom_features.split(',')
@@ -45,9 +53,9 @@ def read_picsom_features(args):
         fx.append(fdat)
 
     if len(fx)>1:
-        return np.concatenate(fx, axis=1)
+        return np.concatenate(fx, axis=1), lab
     else:
-        return np.array(fx[0])
+        return np.array(fx[0]), lab
     
 def read_data(args):
     year = '2020'
@@ -86,9 +94,10 @@ def read_data(args):
                 if m:
                     vid.append(row[1])
 
-    data_y = np.array(data_y)
-    data_x = read_picsom_features(args)
-    return (vid, data_x, data_y)
+    data_y      = np.array(data_y)
+    #print(data_y[:5,:])
+    data_x, lab = read_picsom_features(args)
+    return (vid, lab, data_x, data_y)
 
 
 def train_one(args, i, t_x, t_y, v_x, v_y, nepochs, val_interval,
@@ -214,15 +223,15 @@ def average_results(rr):
 
     return res
 
-def show_result(i, r0, e0, r1, e1, target, H):
+def show_result(i, r0, e0, r1, e1, target, H, f):
     if target=='both':
-        print('{} max correlations short={:8.6f} (epoch {:d}) long={:8.6f} (epoch {:d}) h={:d}'.
-              format(i, r0, e0, r1, e1, H))
+        print('{} max correlations short={:8.6f} (epoch {:d}) long={:8.6f} (epoch {:d}) h={:d} {}'.
+              format(i, r0, e0, r1, e1, H, f))
     else:
-        print('{} max correlation {}={:8.6f} (epoch {:d}) h={:d}'.format(i, target, r0, e0, H))
+        print('{} max correlation {}={:8.6f} (epoch {:d}) h={:d} {}'.format(i, target, r0, e0, H, f))
 
 
-def fold(i, n, x):
+def fold_old(i, n, x):
     assert i>=0 and n>i
     v = x.nonzero()[0]
     s = len(v)
@@ -233,8 +242,30 @@ def fold(i, n, x):
         r[v[j%s]] = True
     return r
 
-        
-def main(args, vid, data_x, data_y):    
+
+def get_folds_old(nfolds, n):
+    folds = [ [False]*n for i in range(nfolds) ]
+    #print(len(folds), len(folds[0]))
+    for j in range(n):
+        i = j*nfolds // n
+        folds[i][j] = True
+    return folds
+
+
+def get_folds(nfolds, n, ll):
+    folds = [ [False]*n for i in range(nfolds) ]
+    # print(len(folds), len(folds[0]), len(ll), ll)
+    for j in range(n):
+        v = int(ll[j])
+        for i in range(nfolds):
+            if v in folds_ids[i]:
+                folds[i][j] = True
+    # a = np.array(folds)
+    
+    return folds
+
+
+def main(args, vid, lab, data_x, data_y):    
     global device
     device = torch.device('cuda' if torch.cuda.is_available() and not args.cpu else 'cpu')
 
@@ -257,7 +288,9 @@ def main(args, vid, data_x, data_y):
 
     iallx   = np.array(range(nall)) ; ially   = iallx[:ndev]
     idevx   = iallx < ndev          ; idevy   = idevx[:ndev]
-    itrainx = fold(f_i, f_n, idevx) ; itrainy = itrainx[:ndev]
+#   itrainx = fold(f_i, f_n, idevx) ; itrainy = itrainx[:ndev]
+    itrainx = np.array([True]*ndev+[False]*(nall-ndev))
+    itrainy = itrainx[:ndev]
     ivalx   = idevx & ~itrainx      ; ivaly   = ivalx[:ndev]
 
     dtype   = torch.float
@@ -278,10 +311,7 @@ def main(args, vid, data_x, data_y):
     epochs = args.epochs
     val_interval = args.val_interval
     nfolds = args.folds
-    folds = [ [ False ] *train_x.shape[0]  for i in range(nfolds) ]
-    for j in range(train_x.shape[0]):
-        i = j*nfolds // train_x.shape[0]
-        folds[i][j] = True
+    folds = get_folds(nfolds, train_x.shape[0], lab)
 
     res = []
     for i in range(nfolds):
@@ -294,23 +324,23 @@ def main(args, vid, data_x, data_y):
         r = train_one(args, i, t_x, t_y, v_x, v_y, epochs, val_interval, None, None, None)
         res.append(r)
         r0, e0, r1, e1 = solve_max(r)
-        show_result(i, r0, e0, r1, e1, target, args.hidden_size)
+        show_result(i, r0, e0, r1, e1, target, args.hidden_size, args.picsom_features)
         sys.stdout.flush()
 
     avg = average_results(res)
     r0, e0, r1, e1 = solve_max(avg)
-    show_result('AVER.', r0, e0, r1, e1, target, args.hidden_size)
+    show_result('AVER.', r0, e0, r1, e1, target, args.hidden_size, args.picsom_features)
     sys.stdout.flush()
 
-    r = train_one(args, 0, train_x, train_y, val_x, val_y, e0, e0, target, args.output, val_f)
-    r0v, e0v, r1v, e1v = solve_max(r)
-    show_result('FINAL', r0v, e0v, r1v, e1v, target, args.hidden_size)
-    sys.stdout.flush()
+    # r = train_one(args, 0, train_x, train_y, val_x, val_y, e0, e0, target, args.output, val_f)
+    # r0v, e0v, r1v, e1v = solve_max(r)
+    # show_result('FINAL', r0v, e0v, r1v, e1v, target, args.hidden_size, args.picsom_features)
+    # sys.stdout.flush()
 
-    r = train_one(args, 0, train_x, train_y, test_x, None, e0, e0, target, args.output, test_f)
-    r0t, e0t, r1t, e1t = solve_max(r)
-    show_result('TEST', r0t, e0t, r1t, e1t, target, args.hidden_size)
-    sys.stdout.flush()
+    # r = train_one(args, 0, train_x, train_y, test_x, None, e0, e0, target, args.output, test_f)
+    # r0t, e0t, r1t, e1t = solve_max(r)
+    # show_result('TEST', r0t, e0t, r1t, e1t, target, args.hidden_size, args.picsom_features)
+    # sys.stdout.flush()
 
         
 if __name__ == '__main__':
@@ -323,6 +353,7 @@ if __name__ == '__main__':
     pf_coco101 = 'coco-80-c_in12_rn101_pool5o_d_a'
     pf_coco152 = 'coco-80-c_in12_rn152_pool5o_d_a'
     pf_i3d     = 'i3d-25-128-avg'
+    pf_audio   = 'audioset-527'
     
     pf_rs     = ','.join([pf_rn152, pf_sun152])
     pf_rsc    = ','.join([pf_rn152, pf_sun152, pf_coco152])
@@ -339,28 +370,28 @@ if __name__ == '__main__':
     parser.add_argument('--ntrain', type=int, default=0,
                         help="Number of training samples used")
     parser.add_argument('--hidden_size', type=int, default=430,
-                        help="Hidden layer size")
+                        help="Hidden layer size, default=%(default)s")
     parser.add_argument('--target', type=str, default='both',
                         help="Predicted variable: short, long or both (default)")
-    parser.add_argument('--folds', type=int, default=10,
-                        help="Number folds in cross-validation, default=10")
+    parser.add_argument('--folds', type=int, default=6,
+                        help="Number folds in cross-validation, default=%(default)i")
     parser.add_argument('--epochs', type=int, default=1000,
-                        help="Number of epochs in training, default=1000")
+                        help="Number of epochs in training, default=%(default)i")
     parser.add_argument('--val_interval', type=int, default=10,
-                        help="Interval between vaolidations, default=10")
+                        help="Interval between vaolidations, default=%(default)i")
     parser.add_argument('--picsom_features', type=str,
-                        default=picsom_def_feat, help="PicSOM features used")
+                        default=picsom_def_feat, help="PicSOM features used, default=%(default)s")
     parser.add_argument('--output', type=str,
-                        default=None, help="output file for external evaluation")
+                        default=None, help="output file for external evaluation, default=%(default)s")
     parser.add_argument('--train_fold', type=str,
-                        default='0/4', help="training set fold#/nfolds")
+                        default='0/4', help="training set fold#/nfolds, default=%(default)s")
     args = parser.parse_args()
 
     if args.ntrain:
         print('--ntrain deprecated, use instead --train_fold=0/4')
         exit(1)
     
-    vid, data_x, data_y = read_data(args)
-    main(args, vid, data_x, data_y)
+    vid, lab, data_x, data_y = read_data(args)
+    main(args, vid, lab, data_x, data_y)
 
     
