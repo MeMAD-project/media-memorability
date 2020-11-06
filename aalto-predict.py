@@ -353,6 +353,7 @@ if __name__ == '__main__':
     pf_coco101 = 'coco-80-c_in12_rn101_pool5o_d_a'
     pf_coco152 = 'coco-80-c_in12_rn152_pool5o_d_a'
     pf_i3d     = 'i3d-25-128-avg'
+    pf_c3d     = 'c3d-rn18-s1m-pool5-a'
     pf_audio   = 'audioset-527'
     
     pf_rs     = ','.join([pf_rn152, pf_sun152])
@@ -362,7 +363,7 @@ if __name__ == '__main__':
     pf_rrssi  = ','.join([pf_rn152, pf_rn101, pf_sun152, pf_sun101, pf_i3d])
     pf_rrsscc = ','.join([pf_rn152, pf_rn101, pf_sun152, pf_sun101, pf_coco152, pf_coco101])
     picsom_def_feat = pf_rrssi
-    picsom_def_feat = pf_rn152
+    picsom_def_feat = pf_i3d
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--cpu', action="store_true",
@@ -378,7 +379,7 @@ if __name__ == '__main__':
     parser.add_argument('--epochs', type=int, default=1000,
                         help="Number of epochs in training, default=%(default)i")
     parser.add_argument('--val_interval', type=int, default=10,
-                        help="Interval between vaolidations, default=%(default)i")
+                        help="Interval between validations, default=%(default)i")
     parser.add_argument('--picsom_features', type=str,
                         default=picsom_def_feat, help="PicSOM features used, default=%(default)s")
     parser.add_argument('--output', type=str,
