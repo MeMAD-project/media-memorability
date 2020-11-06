@@ -5,5 +5,5 @@
 
 . ./venv/bin/activate
 
-./aalto-predict.py --target long --hidden_size $1 --picsom_features $2
+./aalto-predict.py --target $1 --hidden_size $2 --picsom_features $3
 
