@@ -1,5 +1,14 @@
 #! /usr/bin/env python3
 
+# final results with these:
+
+# ./aalto-predict.py --target short --hidden_size 80 --epochs 750 \
+#   --picsom_features i3d-25-128-avg,audioset-527 --output i3d+audio_80_750
+
+# ./aalto-predict.py --target long --hidden_size 260 --epochs 160 \
+#   --picsom_features i3d-25-128-avg,audioset-527 --output i3d+audio_260_160
+
+
 import torch
 import numpy as np
 import scipy.stats
@@ -100,13 +109,13 @@ def read_data(args):
     return (vid, lab, data_x, data_y)
 
 
-def train_one(args, i, t_x, t_y, v_x, v_y, nepochs, val_interval,
-              target, output, v_f):
+def train_one(args, iii, t_x, t_y, v_x, v_y, nepochs, val_interval,
+              target, output, v_f, jjj):
     D_in  = t_x.shape[1]
     H     = args.hidden_size
     D_out = t_y.shape[1]
 
-    if i==0:
+    if iii==0:
         print('t_x =', t_x.shape, 't_y =', t_y.shape)
         print('v_x =', v_x.shape, 'v_y =', v_y.shape if v_y is not None else None)
         print('network structure', D_in, H, D_out)
@@ -139,7 +148,7 @@ def train_one(args, i, t_x, t_y, v_x, v_y, nepochs, val_interval,
         loss.backward()
         optimizer.step()
 
-        if t%val_interval==0:
+        if val_interval==0 or t%val_interval==0:
             model.eval()
             r0 = 0
             r1 = 0
@@ -176,17 +185,18 @@ def train_one(args, i, t_x, t_y, v_x, v_y, nepochs, val_interval,
 
             res.append([t, r0, r1])
 
-            if output is not None and t>0:
+            if output is not None:
                 tasks = ['short', 'long'] if target=='both' else [target]
-                for task in tasks:
-                    taskx = task if task=='long' else 'shor'
-                    csv  = 'me18in_memad_'+taskx+'term_'+('val_' if v_y is not None else '')
+                for taskx in tasks:
+                    # taskx = task if task=='long' else 'shor'
+                    csv  = taskx+'_'+str(jjj)+'_'
                     csv += output+'.csv'
                     p = p1 if D_out==2 and task=='long' else p0
+                    assert p.shape==v_f.shape
                     with open(csv, 'w') as fp:
                         for i in range(len(p)):
-                            print(v_f[i]+','+str(p[i].item())+',1', file=fp)
-                    print('stored in <'+csv+'>') 
+                            print(str(v_f[i])+','+str(p[i].item()), file=fp)
+                    print('epoch', t, 'stored', p.shape[0], 'in <'+csv+'>') 
     
     return res
 
@@ -278,7 +288,12 @@ def main(args, vid, lab, data_x, data_y):
     assert m, 'train_fold should be (\d+)/(\d+)'
     f_i = int(m.group(1))
     f_n = int(m.group(2))
-    
+
+    numbers = []
+    for l in lab:
+        numbers.append(int(l))
+    numbers = np.array(numbers, dtype=np.int32)
+
     nall   = data_x.shape[0]
     ndev   = data_y.shape[0]
     ntrain = ndev*(f_n-1)//f_n if f_n>1 else ndev
@@ -303,6 +318,9 @@ def main(args, vid, lab, data_x, data_y):
     test_x  = torch.tensor(data_x[~idevx,:],     device=device, dtype=dtype)
     test_f  = np.array(vid)[~idevx]
     
+    train_n = numbers[itrainx]
+    test_n  = numbers[~itrainx]
+
     print('train_x =', train_x.shape, 'train_y =', train_y.shape)
     print('val_x =',   val_x.shape,   'val_y =',   val_y.shape)
     print('#val_f =',  len(val_f),    '#test_f =', len(test_f))
@@ -321,7 +339,8 @@ def main(args, vid, lab, data_x, data_y):
         t_y = train_y[r,:]
         v_x = train_x[s,:]
         v_y = train_y[s,:]
-        r = train_one(args, i, t_x, t_y, v_x, v_y, epochs, val_interval, None, None, None)
+        v_n = train_n[s]
+        r = train_one(args, i, t_x, t_y, v_x, v_y, epochs, val_interval, target, args.output, v_n, i)
         res.append(r)
         r0, e0, r1, e1 = solve_max(r)
         show_result(i, r0, e0, r1, e1, target, args.hidden_size, args.picsom_features)
@@ -331,16 +350,17 @@ def main(args, vid, lab, data_x, data_y):
     r0, e0, r1, e1 = solve_max(avg)
     show_result('AVER.', r0, e0, r1, e1, target, args.hidden_size, args.picsom_features)
     sys.stdout.flush()
+    print(r0, e0, r1, e1)
 
     # r = train_one(args, 0, train_x, train_y, val_x, val_y, e0, e0, target, args.output, val_f)
     # r0v, e0v, r1v, e1v = solve_max(r)
     # show_result('FINAL', r0v, e0v, r1v, e1v, target, args.hidden_size, args.picsom_features)
     # sys.stdout.flush()
 
-    # r = train_one(args, 0, train_x, train_y, test_x, None, e0, e0, target, args.output, test_f)
-    # r0t, e0t, r1t, e1t = solve_max(r)
-    # show_result('TEST', r0t, e0t, r1t, e1t, target, args.hidden_size, args.picsom_features)
-    # sys.stdout.flush()
+    r = train_one(args, 0, train_x, train_y, test_x, None, epochs, epochs, target, args.output, test_n, 6)
+    r0t, e0t, r1t, e1t = solve_max(r)
+    show_result('TEST', r0t, e0t, r1t, e1t, target, args.hidden_size, args.picsom_features)
+    sys.stdout.flush()
 
         
 if __name__ == '__main__':
