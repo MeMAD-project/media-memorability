@@ -273,6 +273,7 @@ def main(args, vid, data_x, data_y):
     print('train_x =', train_x.shape, 'train_y =', train_y.shape)
     print('val_x =',   val_x.shape,   'val_y =',   val_y.shape)
     print('#val_f =',  len(val_f),    '#test_f =', len(test_f))
+    sys.stdout.flush()
     
     epochs = args.epochs
     val_interval = args.val_interval
@@ -294,18 +295,22 @@ def main(args, vid, data_x, data_y):
         res.append(r)
         r0, e0, r1, e1 = solve_max(r)
         show_result(i, r0, e0, r1, e1, target, args.hidden_size)
+        sys.stdout.flush()
 
     avg = average_results(res)
     r0, e0, r1, e1 = solve_max(avg)
     show_result('AVER.', r0, e0, r1, e1, target, args.hidden_size)
+    sys.stdout.flush()
 
     r = train_one(args, 0, train_x, train_y, val_x, val_y, e0, e0, target, args.output, val_f)
     r0v, e0v, r1v, e1v = solve_max(r)
     show_result('FINAL', r0v, e0v, r1v, e1v, target, args.hidden_size)
+    sys.stdout.flush()
 
     r = train_one(args, 0, train_x, train_y, test_x, None, e0, e0, target, args.output, test_f)
     r0t, e0t, r1t, e1t = solve_max(r)
     show_result('TEST', r0t, e0t, r1t, e1t, target, args.hidden_size)
+    sys.stdout.flush()
 
         
 if __name__ == '__main__':
