@@ -27,7 +27,7 @@ if __name__ == '__main__':
 
     alto_titles_danny = adding_danny_to_rest(alto_and_titles,danny_captions)
     alto_titles_danny.to_csv('alto_titles_danny.csv')
-    print('DOOOOOONE')
+
 
     ismail1 = pd.read_csv('results_count_log_with_deepcaptions.csv')
     #ismail2 = pd.read_csv('results_bertmaxpavgpca350.csv')
@@ -72,7 +72,6 @@ if __name__ == '__main__':
     Y=labels[['short-term_memorability','long-term_memorability']].values #targets
     Y_st=labels['short-term_memorability']
     #print(Y_st)
-    print('oooooooooooooooooooooooooooooooooooooooooooo')
     Y_lt = labels['long-term_memorability']
     df2=pd.read_csv('et_max_alto_titles.csv')
     #df2['video'] = labels['video']
