@@ -36,15 +36,16 @@ folds_ids = pickle.load(open('folds_ids.pickle', 'br'))
 #print(folds_ids)
 
 def read_picsom_features(args):
-    year   = '2020'
-    dev = 'dev' if year=='2019' else 'training'
+    year   = '2020b'
+    # dev = 'dev' if year=='2019' else 'training'
     labels = picsom_label_index('picsom/'+year+'/meta/labels.txt')
-    dev    = picsom_class('picsom/'+year+'/classes/'+dev)
+    train  = picsom_class('picsom/'+year+'/classes/training')
     test   = picsom_class('picsom/'+year+'/classes/test')
+    devx   = picsom_class('picsom/'+year+'/classes/dev')
 
     # devi = sorted([ labels.index_by_label(i) for i in dev.objects() ])
 
-    allobjects = dev.objects() | test.objects()
+    allobjects = train.objects() | test.objects() | devx.objects()
     
     alli = sorted([ labels.index_by_label(i) for i in allobjects ])
 
@@ -67,7 +68,7 @@ def read_picsom_features(args):
         return np.array(fx[0]), lab
     
 def read_data(args):
-    year = '2020'
+    year = '2020b'
     vid    = []
     data_y = []
 
@@ -95,6 +96,8 @@ def read_data(args):
                 if m:
                     vid.append(row[1])
                     data_y.append([ float(row[4]), float(row[5]) ])
+        # print(np.array(data_y)[:,0])
+        # print(np.sort(np.array(data_y)[:,0]))
                     
         with open('data/2020/test_urls.csv', newline='') as csvfile:
             rows = csv.reader(csvfile, delimiter=',', quotechar='|')
@@ -102,6 +105,18 @@ def read_data(args):
                 m = re.match('^\d+$', row[0])
                 if m:
                     vid.append(row[1])
+                    if year=='2020b':
+                        data_y.append([ -1, -1 ])
+
+        if year=='2020b':
+            with open('data/2020/dev_scores.csv', newline='') as csvfile:
+                rows = csv.reader(csvfile, delimiter=',', quotechar='|')
+                for row in rows:
+                    m = re.match('^\d+$', row[0])
+                    if m:
+                        vid.append(row[1])
+                        data_y.append([ float(row[4]), float(row[5]) ])
+            
 
     data_y      = np.array(data_y)
     #print(data_y[:5,:])
@@ -115,12 +130,18 @@ def train_one(args, iii, t_x, t_y, v_x, v_y, nepochs, val_interval,
     H     = args.hidden_size
     D_out = t_y.shape[1]
 
+    #print(np.sort(np.array(t_y)[:,0]))
+
     if iii==0:
         print('t_x =', t_x.shape, 't_y =', t_y.shape)
         print('v_x =', v_x.shape, 'v_y =', v_y.shape if v_y is not None else None)
         print('network structure', D_in, H, D_out)
         print('max epochs', nepochs)
-    
+
+    #print(t_y)
+    #print(torch.min(t_y), torch.max(t_y))
+    #print(torch.min(v_y), torch.max(v_y))
+        
     model = torch.nn.Sequential(
         torch.nn.Linear(D_in, H),
         torch.nn.ReLU(),
@@ -166,7 +187,7 @@ def train_one(args, iii, t_x, t_y, v_x, v_y, nepochs, val_interval,
             p0 = v_y_pred.detach().cpu()[:,0]
             if v_y is not None:
                 g0 = v_y.cpu()[:,0]
-                # print(p0[:10], g0[:10])
+                #print(p0[:10], g0[:10])
                 r0 = scipy.stats.spearmanr(p0, g0).correlation
 
             if D_out==2:
@@ -175,7 +196,7 @@ def train_one(args, iii, t_x, t_y, v_x, v_y, nepochs, val_interval,
                     g1 = v_y.cpu()[:,1]
                     r1 = scipy.stats.spearmanr(p1, g1).correlation
 
-            if False:
+            if True and v_y is not None:
                 print('{:7d} {:8.6f} {:8.6f} {:8.6f} {:8.6f}'.
                       format(t, loss.item(), v_loss.item(), r0, r1))
 
@@ -279,8 +300,16 @@ def main(args, vid, lab, data_x, data_y):
     global device
     device = torch.device('cuda' if torch.cuda.is_available() and not args.cpu else 'cpu')
 
+    np.set_printoptions(threshold=sys.maxsize)
+    #print('QQQ', np.array(data_y[:,0]))
+    #print('WWW', np.sort(np.array(data_y[:,0])))
+
     target = args.target
     s = [target=='short' or target=='both', target=='long' or target=='both']
+    #s = 0
+    #if target=='long':
+    #    s = 1
+        
     print('data_x =', data_x.shape, 'data_y =', data_y.shape, 'target =', target,
           'train_fold =', args.train_fold, '#vid =', len(vid))
 
@@ -297,17 +326,21 @@ def main(args, vid, lab, data_x, data_y):
     nall   = data_x.shape[0]
     ndev   = data_y.shape[0]
     ntrain = ndev*(f_n-1)//f_n if f_n>1 else ndev
-    nval   = ndev-ntrain
-    assert ntrain>0 and nval>=0, \
-        'train-split {} + {} = {} does not make sense'.format(ntrain, nval, ndev)
 
+    print('nall={} ndev={} ntrain={}'.format(nall, ndev, ntrain))
+    
     iallx   = np.array(range(nall)) ; ially   = iallx[:ndev]
     idevx   = iallx < ndev          ; idevy   = idevx[:ndev]
-#   itrainx = fold(f_i, f_n, idevx) ; itrainy = itrainx[:ndev]
     itrainx = np.array([True]*ndev+[False]*(nall-ndev))
     itrainy = itrainx[:ndev]
     ivalx   = idevx & ~itrainx      ; ivaly   = ivalx[:ndev]
 
+    #print('LLL', len(itrainx), len(itrainy), s,  itrainy)
+    #print('PPP', np.array(data_y[itrainy][:,0]))
+    #print('OOO', np.array(data_y[itrainy][:,s]))
+    #print('AAA', np.array(data_y[itrainy][:,s])[:,0])
+    #print('BBB', np.sort(np.array(data_y[itrainy][:,s])[:,0]))
+    
     dtype   = torch.float
     train_x = torch.tensor(data_x[itrainx,:],    device=device, dtype=dtype)
     train_y = torch.tensor(data_y[itrainy][:,s], device=device, dtype=dtype)
@@ -328,23 +361,31 @@ def main(args, vid, lab, data_x, data_y):
     
     epochs = args.epochs
     val_interval = args.val_interval
-    nfolds = args.folds
-    folds = get_folds(nfolds, train_x.shape[0], lab)
+
+    #print(np.sort(np.array(train_y)[:,0]))
 
     res = []
-    for i in range(nfolds):
-        s = folds[i]
-        r = [ not j for j in s ]
-        t_x = train_x[r,:]
-        t_y = train_y[r,:]
-        v_x = train_x[s,:]
-        v_y = train_y[s,:]
-        v_n = train_n[s]
-        r = train_one(args, i, t_x, t_y, v_x, v_y, epochs, val_interval, target, args.output, v_n, i)
-        res.append(r)
-        r0, e0, r1, e1 = solve_max(r)
-        show_result(i, r0, e0, r1, e1, target, args.hidden_size, args.picsom_features)
-        sys.stdout.flush()
+    i = 0
+    r = [True ] * 590 + [False] * 500 + [False] * 410
+    s = [False] * 590 + [False] * 500 + [True ] * 410
+    t_x = train_x[r,:]
+    t_y = train_y[r,:]
+    v_x = train_x[s,:]
+    v_y = train_y[s,:]
+    v_n = train_n[s]
+
+    print(v_n.shape, v_n[:5], v_n[-5:])
+    print(v_x[0,:5], v_y[0])
+
+    # print('TRAIN_Y', np.sort(np.array(train_y.detach().cpu())[:,0]))
+    #print(t_y.shape)
+    #print('T_Y', np.sort(np.array(t_y)[:,0]))
+
+    r = train_one(args, i, t_x, t_y, v_x, v_y, epochs, val_interval, target, args.output, v_n, i)
+    res.append(r)
+    r0, e0, r1, e1 = solve_max(r)
+    show_result(i, r0, e0, r1, e1, target, args.hidden_size, args.picsom_features)
+    sys.stdout.flush()
 
     avg = average_results(res)
     r0, e0, r1, e1 = solve_max(avg)
@@ -413,6 +454,7 @@ if __name__ == '__main__':
         exit(1)
     
     vid, lab, data_x, data_y = read_data(args)
+    print(len(vid), len(lab), data_x.shape, data_y.shape)
     main(args, vid, lab, data_x, data_y)
 
     
