@@ -13,6 +13,7 @@ set hh=`seq 20 20 500`
 foreach h ( $hh )
     foreach f ( $ff )
 	sbatch aalto-sbatch.sh short $h $f
+#	sbatch aalto-sbatch.sh long  $h $f
     end
 end
 
