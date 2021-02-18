@@ -1,4 +1,5 @@
-# Short term memorability score computation
+# PicSOM score computation
+##Short term memorability score computation
 
 Run
 
@@ -16,3 +17,13 @@ The test and train ids are extracted from
 dev    = picsom_class('picsom/'+year+'/classes/'+dev)
 test   = picsom_class('picsom/'+year+'/classes/test')
 The predictions are saved to --output
+
+##Long term memorability score computation
+
+
+Run
+
+```
+aalto-predict.py --target long --hidden_size 260 --epochs 160  --picsom_features i3d-25-128-avg,audioset-527 --output i3d+audio_260_160
+
+```
