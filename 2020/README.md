@@ -1,1 +1,9 @@
-The final scores are a weighed combination of the scores obtained with vilbert, audio-visual and textual scores independently. 
+# Vilbert score computation
+
+## Vilbert features extraction 
+See  `README.md`under vilbert-multi-task
+
+## Vilbert memorability score computation 
+
+
+
