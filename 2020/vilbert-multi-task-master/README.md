@@ -102,8 +102,8 @@ python script/convert_to_lmdb.py  ----features_dir <path_to_directory_with_featu
 ### Get Vilbert representation
 
 --tasks 20 allows you to extract vilbert features.
-Save the visual and textual representations are written to `--rep_save_path` so they can be used later to train a regressor. 
-Path to prepared captions and visual features must be specified in vilbert_tasks.yml (TASK20
+Save the visual and textual representations to `--rep_save_path` so they can be used later to train a regressor. 
+Path to prepared captions and visual features must be specified in vilbert_tasks.yml (TASK20)
 
 ```
 python script/ME/vilbert_representations.py --bert_model bert-base-uncased --from_pretrained save/VQA_bert_base_6layer_6conect-finetune_from_multi_task_model-task_1/pytorch_model_19.bin --config_file config/bert_base_6layer_6conect.json --tasks 20 --batch_size 128 --task_specific_tokens --rep_save_path datasets/ME/out_features/train_features.pkl
