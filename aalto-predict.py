@@ -368,7 +368,7 @@ def main(args, vid, lab, data_x, data_y):
         xtra_data_x, extra_lab = read_picsom_features(args, extra=args.extra_test)
         xtra_data_x = torch.tensor(xtra_data_x, device=device, dtype=dtype)
         extra_lab = np.array(extra_lab)
-        r = train_one(args, 0, train_x, train_y, xtra_data_x, None, epochs, epochs, target, args.output+'-extra', extra_lab, 6)
+        r = train_one(args, 0, train_x, train_y, xtra_data_x, None, epochs, epochs, target, args.output+'-'+args.extra_test, extra_lab, 6)
         
 if __name__ == '__main__':
     # print(sys.version, torch.__version__)
