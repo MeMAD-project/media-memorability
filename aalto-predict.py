@@ -35,13 +35,14 @@ torch.backends.cudnn.benchmark = False
 folds_ids = pickle.load(open('folds_ids.pickle', 'br'))
 #print(folds_ids)
 
-def read_picsom_features(args):
-    year   = '2020'
+def read_picsom_features(args, extra=None):
+    year   = '2020' if extra is None else extra
     dev = 'dev' if year=='2019' else 'training'
     labels = picsom_label_index('picsom/'+year+'/meta/labels.txt')
     dev    = picsom_class('picsom/'+year+'/classes/'+dev)
     test   = picsom_class('picsom/'+year+'/classes/test')
-
+    print('read', labels.path(), dev.path(), test.path())
+    
     # devi = sorted([ labels.index_by_label(i) for i in dev.objects() ])
 
     allobjects = dev.objects() | test.objects()
@@ -52,13 +53,13 @@ def read_picsom_features(args):
     for i in alli:
         lab.append(labels.label_by_index(i))
     
-    print('picsom_features =', args.picsom_features)
+    #print('picsom_features =', args.picsom_features)
     fx = []
     ff = args.picsom_features.split(',')
     for f in ff:
         feat = picsom_bin_data('picsom/'+year+'/features/'+f+'.bin')
         fdat = np.array(feat.get_float_list(alli))
-        # print(year, f, fdat.shape)
+        print('read', feat.path(), fdat.shape)
         fx.append(fdat)
 
     if len(fx)>1:
@@ -192,7 +193,7 @@ def train_one(args, iii, t_x, t_y, v_x, v_y, nepochs, val_interval,
                     csv  = taskx+'_'+str(jjj)+'_'
                     csv += output+'.csv'
                     p = p1 if D_out==2 and task=='long' else p0
-                    assert p.shape==v_f.shape
+                    assert p.shape==v_f.shape, str(p.shape)+'!='+str(v_f.shape) 
                     with open(csv, 'w') as fp:
                         for i in range(len(p)):
                             print(str(v_f[i])+','+str(p[i].item()), file=fp)
@@ -362,6 +363,12 @@ def main(args, vid, lab, data_x, data_y):
     show_result('TEST', r0t, e0t, r1t, e1t, target, args.hidden_size, args.picsom_features)
     sys.stdout.flush()
 
+    if args.extra_test is not None:
+        print('EXTRA test with', args.extra_test)
+        xtra_data_x, extra_lab = read_picsom_features(args, extra=args.extra_test)
+        xtra_data_x = torch.tensor(xtra_data_x, device=device, dtype=dtype)
+        extra_lab = np.array(extra_lab)
+        r = train_one(args, 0, train_x, train_y, xtra_data_x, None, epochs, epochs, target, args.output+'-extra', extra_lab, 6)
         
 if __name__ == '__main__':
     # print(sys.version, torch.__version__)
@@ -406,6 +413,8 @@ if __name__ == '__main__':
                         default=None, help="output file for external evaluation, default=%(default)s")
     parser.add_argument('--train_fold', type=str,
                         default='0/4', help="training set fold#/nfolds, default=%(default)s")
+    parser.add_argument('--extra_test', type=str,
+                        help="extra testing data set")
     args = parser.parse_args()
 
     if args.ntrain:
