@@ -2,7 +2,9 @@
 
 Run
 
-'''aalto-predict.py --target short --hidden_size 80 --epochs 750 --picsom_features i3d-25-128-avg,audioset-527 --output i3d+audio_80_750'''
+```aalto-predict.py --target short --hidden_size 80 --epochs 750 --picsom_features i3d-25-128-avg,audioset-527 --output i3d+audio_80_750
+```
+
 
 The data are read and organised as such : 
 
