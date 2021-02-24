@@ -72,7 +72,7 @@ In this part, the fine-tuned (VQA or NLVR2) model weights are being frozen.
 ### Prepare Captions
 Preparing captions consists of loading video IDs and captions from the `.txt` or `.csv` file, , tokenize, tensorize and save the cache file. An example of using this script
 ```
-python script/ME/captions_preparation.py --captions_path /MediaEval/alto_titles_danny.csv --gt_path /MediaEval/dev-set/ground-truth/ground-truth_dev-set.csv --split trainval --dc
+python script/ME2020/captions_preparation.py --captions_path /MediaEval/alto_titles_danny.csv --gt_path /MediaEval/dev-set/ground-truth/ground-truth_dev-set.csv --split trainval --dc
 ```
 
 ### Extract Frames from Video
