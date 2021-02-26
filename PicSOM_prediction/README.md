@@ -1,10 +1,11 @@
 # PicSOM score computation
-##Short term memorability score computation
+
+## Short term memorability score computation
 
 Run
 
 ```
-aalto-predict.py --target short --hidden_size 80 --epochs 750 --picsom_features i3d-25-128-avg,audioset-527 --output i3d+audio_80_750
+./aalto-predict.py --target short --hidden_size 80 --epochs 750 --picsom_features i3d-25-128-avg,audioset-527 --output i3d+audio_80_750
 ```
 
 
@@ -18,12 +19,45 @@ dev    = picsom_class('picsom/'+year+'/classes/'+dev)
 test   = picsom_class('picsom/'+year+'/classes/test')
 The predictions are saved to --output
 
-##Long term memorability score computation
 
+## Long term memorability score computation
 
 Run
 
 ```
-aalto-predict.py --target long --hidden_size 260 --epochs 160  --picsom_features i3d-25-128-avg,audioset-527 --output i3d+audio_260_160
+./aalto-predict.py --target long --hidden_size 260 --epochs 160  --picsom_features i3d-25-128-avg,audioset-527 --output i3d+audio_260_160
 
 ```
+
+
+## Applying the model to external data
+
+Run
+
+```
+aalto-predict.py --target short --hidden_size 80 --epochs 750 --picsom_features i3d-25-128-avg,audioset-527 --output i3d+audio_80_750 --extra surrey20
+```
+
+which will create file `short_6_i3d+audio_80_750-surrey20.csv` containing the short-term predictions for the `surrey20` data set.
+
+
+## Predictions for other videos
+
+### Install the PicSOM software
+
+Download https://github.com/aalto-cbir/PicSOM
+
+Read and follow PicSOM's [README.md](https://github.com/aalto-cbir/PicSOM/blob/master/README.md).
+
+### Create a database
+
+TBW
+
+### Extract features
+
+TBW
+
+### Export features for memorability prediction
+
+TBW
+
