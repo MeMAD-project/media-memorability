@@ -5,7 +5,8 @@
 Run
 
 ```
-./aalto-predict.py --target short --hidden_size 80 --epochs 750 --picsom_features i3d-25-128-avg,audioset-527 --output i3d+audio_80_750
+./aalto-predict.py --target short --hidden_size 80 --epochs 750 \
+    --picsom_features i3d-25-128-avg,audioset-527 --output i3d+audio_80_750
 ```
 
 
@@ -25,7 +26,8 @@ The predictions are saved to --output
 Run
 
 ```
-./aalto-predict.py --target long --hidden_size 260 --epochs 160  --picsom_features i3d-25-128-avg,audioset-527 --output i3d+audio_260_160
+./aalto-predict.py --target long --hidden_size 260 --epochs 160 \
+    --picsom_features i3d-25-128-avg,audioset-527 --output i3d+audio_260_160
 
 ```
 
@@ -35,7 +37,8 @@ Run
 Run
 
 ```
-aalto-predict.py --target short --hidden_size 80 --epochs 750 --picsom_features i3d-25-128-avg,audioset-527 --output i3d+audio_80_750 --extra surrey20
+aalto-predict.py --target short --hidden_size 80 --epochs 750 \
+    --picsom_features i3d-25-128-avg,audioset-527 --output i3d+audio_80_750 --extra surrey20
 ```
 
 which will create file `short_6_i3d+audio_80_750-surrey20.csv` containing the short-term predictions for the `surrey20` data set.
