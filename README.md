@@ -11,8 +11,8 @@ MeMAD's participation to the
   address = {Sophia Antipolis, France}
 }
 
-'''
 
+```
 
 
 ```
@@ -22,5 +22,4 @@ MeMAD's participation to the
   booktitle={MediaEval 2020: Multimedia Benchmark Workshop},
   year={2020}
 }
-
-'''
+```
