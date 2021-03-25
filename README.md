@@ -27,7 +27,7 @@ Please cite the following if you use this code.
 ```
 The 2020 model is a combination of three different scores.
 First compute the three different scores independtly following the ReadMe instructions in the vilbert, PicSOM_prediction and textual_scores. 
-Then obtain the final score by running
+Then obtain the final score by running, combine_scores_2020.py, a code snippet for evluating all linear combinbations of values to combine different modalities.
 ```
 python combine_scores_2020.py
 ```
