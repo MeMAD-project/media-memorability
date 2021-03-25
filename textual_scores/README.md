@@ -74,7 +74,3 @@ optional arguments:
                         Path to word embeddings (e.g. GloVe)
 
 ```
-
-
-## combine_scores.py
-A code snippet for evluating all linear combinbations of values to combine different modalities.
