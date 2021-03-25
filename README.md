@@ -25,3 +25,9 @@ Please cite the following if you use this code.
   year={2020}
 }
 ```
+The 2020 model is a combination of three different scores.
+First compute the three different scores independtly following the ReadMe instructions in the vilbert, picsom and text folder. 
+Then obtain the final score by running
+```
+python combine_score_2020.py
+```
