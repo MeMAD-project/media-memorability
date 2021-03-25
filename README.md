@@ -29,5 +29,5 @@ The 2020 model is a combination of three different scores.
 First compute the three different scores independtly following the ReadMe instructions in the vilbert, picsom and text folder. 
 Then obtain the final score by running
 ```
-python combine_score_2020.py
+python combine_scores_2020.py
 ```
