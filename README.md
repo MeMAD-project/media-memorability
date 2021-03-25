@@ -10,11 +10,12 @@ MeMAD's participation to the
   year={2019},
   address = {Sophia Antipolis, France}
 }
-'''
-
-
 
 '''
+
+
+
+```
 @inproceedings{reboud2020predicting,
   title={Predicting Media Memorability with Audio, Video, and Text representation},
   author={Reboud, Alison and Harrando, Ismail and Laaksonen, Jorma and Troncy, Rapha{\"e}l and others},
