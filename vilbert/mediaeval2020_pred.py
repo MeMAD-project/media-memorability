@@ -25,17 +25,15 @@ from scipy.stats import spearmanr
 with open('memad_content_segmentation/first_results.pkl', 'rb') as f:
     data = pickle.load(f)
     print(data)
-    #print('yoooooooooooooooooooooooooooooo')
     print(data['pooled_output_mul'][0])
     print(len(data['pooled_output_v'][0]))
     print('coucou')
-    #print('yaaaaaaaaaaaaaaaaaaa')
+
 
 #with open('datasets/ME2020/out_features/dev_features6framesMEVQA.pkl', 'rb') as f:
     #data_bis = pickle.load(f)
-    #print('yoooooooooooooooooooooooooooooo')
     #print(len(data_bis['pooled_output_mul'][0]))
-    #print('yaaaaaaaaaaaaaaaaaaa')
+
 
 #data=data_bis
 #data.update(data_bis)
