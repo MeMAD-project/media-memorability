@@ -46,7 +46,7 @@ python combine_scores_2020.py
 
 ## Usage
 
-The approach consists in computing three different scores independtly and later averaging them. 
+The approach consists in computing three different scores independently and later averaging them. 
 
 
 #### Computing the text scores
@@ -61,6 +61,7 @@ The first step consists in extracting Vilbert features from the frozen task-agno
 
 
 The second step consists in obtaining  and computing the memorability scores using 
+TODO@Alison Replace hard-coded file names by argument and describe expected format in the Readme
 ``` python vilbert/mediaeval2020_pred.py ```
 
 
