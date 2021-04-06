@@ -66,10 +66,7 @@ TODO@Alison Replace hard-coded file names by argument and describe expected form
 
 
 #### Computing the visual and audio-visual scores
+#### Finding the best weights combination and getting the final scores
 
 
-
-
-
-
-Then obtain the final score by running, combine_scores_2020.py, a code snippet for evluating all linear combinbations of values to combine different modalities.
+Obtain the final score by running, combine_scores_2020.py, a code snippet for evluating all linear combinbations of values to combine different modalities.
