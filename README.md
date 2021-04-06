@@ -40,9 +40,6 @@ Our approach for the 2019 edition is a weighted average method combining predict
 ![Model architecture](./images/2019_architecture.png)
 
 
-```
-python combine_scores_2020.py
-```
 
 ## Usage
 
@@ -69,4 +66,8 @@ TODO@Alison Replace hard-coded file names by argument and describe expected form
 #### Finding the best weights combination and getting the final scores
 
 
-Obtain the final score by running, combine_scores_2020.py, a code snippet for evluating all linear combinbations of values to combine different modalities.
+Obtain the final score by running, combine_scores_2020.py, a code snippet for evaluating all linear combinbations of values to combine different modalities.
+
+```
+python combine_scores_2020.py
+```
