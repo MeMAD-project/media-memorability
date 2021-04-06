@@ -25,13 +25,19 @@ Please cite the following if you use this code.
   year={2020}
 }
 ```
+## 2020 MeMAD's approach
 
-
-Our approach for the 2020 edition is a weighted average method combining predictions made separately from visual, audio, textual and visiolinguisticrepresentations of videos.
+Our approach for the 2020 edition is a weighted average method combining predictions made separately from visual, audio, textual and visiolinguisticrepresentations of videos. Two improvements from the 2019 approach are that we are now using the audio modality and focusing on video features (as opposed to image features ) allowing to better model action rich videos.
 
 ![Model architecture](./images/2020_architecture.png)
 
 
+## 2019 MeMAD's approach
+
+
+Our approach for the 2019 edition is a weighted average method combining predictions made separately from visual, visual embeddings  and textual and representations of videos.
+
+![Model architecture](./images/2019_architecture.png)
 
 
 ```
