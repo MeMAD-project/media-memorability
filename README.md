@@ -29,7 +29,7 @@ Please cite the following if you use this code.
 
 Our approach for the 2020 edition is a weighted average method combining predictions made separately from visual, audio, textual and visiolinguisticrepresentations of videos.
 
-![Model architecture](./assets/architecture.jpg)
+![Model architecture](./images/2020_architecture.png)
 
 
 
