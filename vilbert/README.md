@@ -3,7 +3,7 @@
 ## Vilbert features extraction 
 See  `README.md`under vilbert-multi-task
 
-## Vilbert memorability score computation ans saving
+## Vilbert memorability score computation and saving
 ``` python mediaeval2020_pred.py ```
 
 
