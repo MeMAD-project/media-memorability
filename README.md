@@ -34,9 +34,30 @@ Our approach for the 2020 edition is a weighted average method combining predict
 
 
 
-
-First compute the three different scores independtly following the ReadMe instructions in the vilbert, PicSOM_prediction and textual_scores. 
-Then obtain the final score by running, combine_scores_2020.py, a code snippet for evluating all linear combinbations of values to combine different modalities.
 ```
 python combine_scores_2020.py
 ```
+
+## Usage
+
+The approach consists in computing three different scores independtly and later averaging them. 
+
+
+#### Computing the text scores
+
+
+#### Computing the memorability visiolinguistic scores
+
+The first step consists in extracting Vilbert features from the frozen Vilbert model [1] , following the instructions in the  `README.md`under vilbert/vilbert-multi-task
+
+## Vilbert memorability score computation and saving
+``` python mediaeval2020_pred.py ```
+
+#### Computing the visual and audio scores
+
+
+
+
+
+
+Then obtain the final score by running, combine_scores_2020.py, a code snippet for evluating all linear combinbations of values to combine different modalities.
