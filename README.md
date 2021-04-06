@@ -60,7 +60,7 @@ The first step consists in extracting Vilbert features from the frozen task-agno
 
 
 
-The second step consists in obtaining  and computing the the memorability scores using 
+The second step consists in obtaining  and computing the memorability scores using 
 ``` python vilbert/mediaeval2020_pred.py ```
 
 
