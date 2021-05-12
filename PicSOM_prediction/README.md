@@ -37,7 +37,7 @@ Run
 Run
 
 ```
-aalto-predict.py --target short --hidden_size 80 --epochs 750 \
+./aalto-predict.py --target short --hidden_size 80 --epochs 750 \
     --picsom_features i3d-25-128-avg,audioset-527 --output i3d+audio_80_750 --extra surrey20
 ```
 
@@ -54,13 +54,13 @@ Read and follow PicSOM's [README.md](https://github.com/aalto-cbir/PicSOM/blob/m
 
 ### Create a database
 
-TBW
+Use PicSOM's `analyse=insert` mode.
 
 ### Extract features
 
-TBW
+Use PicSOM's `analyse=create extractfeatures=true` mode.
 
 ### Export features for memorability prediction
 
-TBW
+Use PicSOM's `analyse=exportorderedfeatures` mode.
 
