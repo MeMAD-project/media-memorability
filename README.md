@@ -71,7 +71,7 @@ Read and follow PicSOM_prediction's [`README.md`](./PicSOM_prediction/)
 #### Finding the best weights combination and getting the final scores
 
 
-Obtain the final score by running, combine_scores_2020.py, a code snippet for evaluating all linear combinbations of values to combine different modalities.
+Obtain the final score by running, combine_scores_2020.py, a code snippet for evaluating all linear combinations of values to combine different modalities.
 
 ```
 python combine_scores_2020.py
