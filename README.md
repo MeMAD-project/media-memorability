@@ -52,7 +52,7 @@ The script for the experiments we run for the MeMAD Memorability Challenge 2020 
 To actually compute memorability scores, check `mediaeval_compute_scores.py`.
 
 ```
-usage: mediaeval_memorability_2020.py [-h] [-d VIDEO_DESCRIPTIONS_PATH]
+usage: textual_scores/mediaeval_memorability_2020.py [-h] [-d VIDEO_DESCRIPTIONS_PATH]
                                       [-c DEEP_CAPTION_PATH]
                                       [-s VIDEO_SCORES_PATH]
                                       [-t TEST_SET_PATH] [-r RESULTS_PATH]
@@ -87,7 +87,7 @@ optional arguments:
 The script for the experiments we run for the MeMAD Memorability Challenge 2019 to evaluate the different models for the text modality.
 
 ```
-usage: mediaeval_memorability_2019.py [-h] [-d VIDEO_DESCRIPTIONS_PATH]
+usage: textual_scores/mediaeval_memorability_2019.py [-h] [-d VIDEO_DESCRIPTIONS_PATH]
                                       [-wv WORD_EMBEDDINGS_PATH]
                                       [--save_model]
 
