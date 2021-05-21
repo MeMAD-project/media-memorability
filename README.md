@@ -51,18 +51,21 @@ The approach consists in computing three different scores independently and late
 
 #### Computing the memorability visiolinguistic scores (2020 edition only)
 
-The first step consists in extracting Vilbert features from the frozen task-agnostic Vilbert model, following the instructions in the  `README.md`under 
+ Extracting Vilbert features from the frozen task-agnostic Vilbert model, following the instructions in the  `README.md`under 
 [`vilbert/vilbert-multi-task`](./vilbert/vilbert-multi-task-master/)
 
 
 
 
-The second step consists in obtaining  and computing the memorability scores using 
+Obtaining  and computing the memorability scores using 
 
 ``` python vilbert/mediaeval2020_pred.py ```
 
 
 #### Computing the visual and audio-visual scores
+
+Read and follow PicSOM_prediction's [`README.md`](./PicSOM_prediction/)
+
 #### Finding the best weights combination and getting the final scores
 
 
