@@ -48,6 +48,8 @@ The approach consists in computing three different scores independently and late
 
 #### Computing the text scores
 
+Read and follow textual_scores prediction's [`README.md`](./textual_scores/)
+
 
 #### Computing the memorability visiolinguistic scores (2020 edition only)
 
