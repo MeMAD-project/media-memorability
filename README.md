@@ -76,3 +76,9 @@ Obtain the final score by running, combine_scores_2020.py, a code snippet for ev
 ```
 python combine_scores_2020.py
 ```
+
+For the 2019 edition, obtain the final scores runing
+```
+python combine_scores_2019.py
+```
+
