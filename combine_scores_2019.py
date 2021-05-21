@@ -9,6 +9,7 @@ if __name__ == '__main__':
 
     #if ran from windows machine
     #titles_path = '/medias/db3/MM_GrandChallenge/MediaMemorability/dev-set/dev-set_video-captions.txt'
+    # These paths are hard-coded , TODO replace by arguments
     alto_captions_path='alto_captions.txt'
     titles_path = '/home/portege24/Documents/devset/dev-set/dev-set_video-captions.txt'
     titles= read_titles(titles_path)
