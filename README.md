@@ -26,6 +26,10 @@ Please cite the following if you use this code.
 }
 ```
 ## 2021 MeMAD's approach
+This year we submitted different approaches.
+One multimodal approach (vision,audio,text) with early fusion (the features are concatenated to produce a single prediction)
+One explainable text approach
+One approach which relies on text perplexity measuring
 
 Note: All script finishing by _ns (not submitted) are experiments that werenot included in the final runs
 Not submitted: 
