@@ -28,6 +28,10 @@ Please cite the following if you use this code.
 ## 2021 MeMAD's approach
 
 Note: All script finishing by _ns (not submitted) are experiments that werenot included in the final runs
+Not submitted: 
+late_fusion_2021_ns.py
+SVR_ensemble_2021_ns.py is an additional experiment for late fusion ( for each modality and perplexity scores) with scores obtained with a SVM 
+
 ## 2020 MeMAD's approach
 
 Our approach for the 2020 edition is a weighted average method combining predictions made separately from visual, audio, textual and visiolinguisticrepresentations of videos. Two improvements from the 2019 approach are that we are now using the audio modality and focusing on video features (as opposed to image features ) allowing to better model action rich videos.
