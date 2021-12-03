@@ -49,7 +49,7 @@ python-prctl==1.7
 pytorch-transformers==1.2.0
 pytz==2020.1
 PyWavelets==1.1.1
-PyYAML==5.1.2
+PyYAML==5.4
 pyzmq==19.0.2
 regex==2020.9.27
 requests==2.24.0
