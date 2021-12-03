@@ -11,6 +11,7 @@ class picsom_class:
         self._ismeta  = False
         self._clslist = []
         self._objects = set()
+        self._list    = []
         ok = True
         if os.path.isfile(fn):
             try:
@@ -32,6 +33,7 @@ class picsom_class:
                         self._clslist = entries
                     else:
                         self._objects = set(entries)
+                        self._list    = entries
             except IOError as e:
                 print('Could not open file <{}>'.format(fn))
 
@@ -46,6 +48,9 @@ class picsom_class:
 
     def objects(self):
         return self._objects
+
+    def list(self):
+        return self._list
 
 if __name__ == "__main__":
     if len(sys.argv)!=2 :
