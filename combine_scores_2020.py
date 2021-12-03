@@ -13,10 +13,10 @@ scores_lt = df_scores['part_2_scores'].values.tolist()
 
 
 # Ismail's results
-jorma_st_df = pd.read_csv('me_2020/ismail_best_st.csv', header=None)
-jorma_lt_df = pd.read_csv('me_2020/ismail_best_lt.csv', header=None)
-jorma_st = jorma_st_df[1].values.tolist()[:590]
-jorma_lt = jorma_lt_df[1].values.tolist()[:590]
+ismail_df = pd.read_csv('me_2020/ismail_best_st.csv', header=None)
+ismail_lt_df = pd.read_csv('me_2020/ismail_best_lt.csv', header=None)
+ismail_st = ismail_st_df[1].values.tolist()[:590]
+ismail_lt = ismail_lt_df[1].values.tolist()[:590]
 
        
 # Alison's results

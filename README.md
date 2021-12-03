@@ -1,4 +1,4 @@
-# MeMAD's participation to the MediaEval Media Memorability 2019 and 2020 challenges
+# MeMAD's participation to the MediaEval Media Memorability 2019, 2020 and 2021 challenges
 
  - [MediaEval Media Memorability 2019 Task](http://www.multimediaeval.org/mediaeval2019/memorability/) | [github](https://github.com/multimediaeval/2019-Predicting-Media-Memorability-Task)
  - [MediaEval Media Memorability 2020 Task](https://multimediaeval.github.io/editions/2020/tasks/memorability/) | [github](https://github.com/multimediaeval/2020-Predicting-Media-Memorability-Task)
@@ -25,6 +25,17 @@ Please cite the following if you use this code.
   year={2020}
 }
 ```
+## 2021 MeMAD's approach
+This year we submitted different approaches.
+One multimodal approach (vision,audio,text) with early fusion (the features are concatenated to produce a single prediction)
+One explainable text approach
+One approach which relies on text perplexity measuring
+
+Note: All script finishing by _ns (not submitted) are experiments that werenot included in the final runs
+Not submitted: 
+late_fusion_2021_ns.py
+SVR_ensemble_2021_ns.py is an additional experiment for late fusion ( for each modality and perplexity scores) with scores obtained with a SVM 
+
 ## 2020 MeMAD's approach
 
 Our approach for the 2020 edition is a weighted average method combining predictions made separately from visual, audio, textual and visiolinguisticrepresentations of videos. Two improvements from the 2019 approach are that we are now using the audio modality and focusing on video features (as opposed to image features ) allowing to better model action rich videos.
