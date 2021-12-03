@@ -5,7 +5,8 @@
 See the head of `aalto-predict-2021.py` for examples of the best performing runs.  for eaxmple:
 
 ```
-./aalto-predict-2021.py --train trecvid/train/short --test trecvid/test/short --hidden_size 560 --features i3d-25-128-avg,audioset-527,bert3 --epochs 300 --output run2
+./aalto-predict-2021.py --train trecvid/train/short --test trecvid/test/short --hidden_size 560 \
+    --features i3d-25-128-avg,audioset-527,bert3 --epochs 300 --output run2
 ```
 
 ## Short term memorability score computation 2020
