@@ -1,6 +1,14 @@
 # PicSOM score computation
 
-## Short term memorability score computation
+## Memorability score computation 2021
+
+See the head of `aalto-predict-2021.py` for examples of the best performing runs.  for eaxmple:
+
+```
+./aalto-predict-2021.py --train trecvid/train/short --test trecvid/test/short --hidden_size 560 --features i3d-25-128-avg,audioset-527,bert3 --epochs 300 --output run2
+```
+
+## Short term memorability score computation 2020
 
 Run
 
@@ -21,7 +29,7 @@ test   = picsom_class('picsom/'+year+'/classes/test')
 The predictions are saved to --output
 
 
-## Long term memorability score computation
+## Long term memorability score computation 2020
 
 Run
 
@@ -32,7 +40,7 @@ Run
 ```
 
 
-## Applying the model to external data
+## Applying the model to external data 2020
 
 Run
 
@@ -44,7 +52,7 @@ Run
 which will create file `short_6_i3d+audio_80_750-surrey20.csv` containing the short-term predictions for the `surrey20` data set.
 
 
-## Predictions for other videos
+## Predictions for other videos 2020
 
 ### Install the PicSOM software
 
