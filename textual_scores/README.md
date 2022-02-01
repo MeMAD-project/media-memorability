@@ -2,7 +2,7 @@
 ## mediaeval_memorability_2021.py 
 The script for the experiments we run for the MeMAD Memorability Challenge 2020 to evaluate the different models for the text modality.
 Usage is similar to the 2020 edition (below). 
-The text embeddings of the different datasets are saved under 
+The final text embeddings used for the final submission, and for the different datasets are saved under [`embeddings_output_2021`](./embeddings_output_2021)
 
 ## mediaeval_memorability_2020.py
 The script for the experiments we run for the MeMAD Memorability Challenge 2020 to evaluate the different models for the text modality.
