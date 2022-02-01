@@ -36,15 +36,10 @@ Please cite the following if you use this code.
 }
 ```
 ## 2021 MeMAD's approach
-This year we submitted different approaches.
+For the 2021 edition we submitted different approaches.
 One multimodal approach (vision,audio,text) with early fusion (the features are concatenated to produce a single prediction)
 One explainable text approach
 One approach which relies on text perplexity measuring
-
-Note: All script finishing by _ns (not submitted) are experiments that werenot included in the final runs
-Not submitted: 
-late_fusion_2021_ns.py
-SVR_ensemble_2021_ns.py is an additional experiment for late fusion ( for each modality and perplexity scores) with scores obtained with a SVM 
 
 ## 2020 MeMAD's approach
 
@@ -59,6 +54,7 @@ Our approach for the 2020 edition is a weighted average method combining predict
 Our approach for the 2019 edition is a weighted average method combining predictions made separately from visual, visual embeddings  and textual and representations of videos.
 
 ![Model architecture](./images/2019_architecture.png)
+
 
 
 
@@ -103,3 +99,10 @@ For the 2019 edition, obtain the final scores runing
 python combine_scores_2019.py
 ```
 
+
+## Usage additional experiments 2021 edition
+
+Note: All script finishing by _ns (not submitted) are experiments that werenot included in the final runs
+Not submitted: 
+late_fusion_2021_ns.py
+SVR_ensemble_2021_ns.py is an additional experiment for late fusion ( for each modality and perplexity scores) with scores obtained with a SVM 
