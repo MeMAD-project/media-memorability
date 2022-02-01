@@ -2,6 +2,8 @@
 
  - [MediaEval Media Memorability 2019 Task](http://www.multimediaeval.org/mediaeval2019/memorability/) | [github](https://github.com/multimediaeval/2019-Predicting-Media-Memorability-Task)
  - [MediaEval Media Memorability 2020 Task](https://multimediaeval.github.io/editions/2020/tasks/memorability/) | [github](https://github.com/multimediaeval/2020-Predicting-Media-Memorability-Task)
+ - [MediaEval Media Memorability 2021 Task](https://multimediaeval.github.io/editions/2021/tasks/memorability/) | [github](https://github.com/multimediaeval/2021-Predicting-Media-Memorability-Task)
+
 
 Please cite the following if you use this code.
 ```
@@ -22,6 +24,14 @@ Please cite the following if you use this code.
   title={Predicting Media Memorability with Audio, Video, and Text representation},
   author={Reboud, Alison and Harrando, Ismail and Laaksonen, Jorma and Troncy, Rapha{\"e}l and others},
   booktitle={MediaEval 2020: Multimedia Benchmark Workshop},
+  year={2020}
+}
+```
+```
+@inproceedings{reboud2021exploring,
+  title={Exploring Multimodality, Perplexity and Explainability forMemorability Prediction},
+  author={Reboud, Alison and Harrando, Ismail and Laaksonen, Jorma and Troncy, Rapha{\"e}l and others},
+  booktitle={MediaEval 2021: Multimedia Benchmark Workshop},
   year={2020}
 }
 ```
