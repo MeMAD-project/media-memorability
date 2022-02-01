@@ -38,6 +38,8 @@ Please cite the following if you use this code.
 ## 2021 MeMAD's approach
 For the 2021 edition we submitted different approaches.
 One multimodal approach (vision,audio,text) with early fusion (the features are concatenated to produce a single prediction)
+![Model architecture](./images/2021_architecture.png)
+
 One explainable text approach
 One approach which relies on text perplexity measuring
 [Presentation slides](https://www.slideshare.net/AlisonReboud/eurecom-and-aalto-university-at-mediaeval-2021)
