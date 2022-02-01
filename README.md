@@ -40,6 +40,7 @@ For the 2021 edition we submitted different approaches.
 One multimodal approach (vision,audio,text) with early fusion (the features are concatenated to produce a single prediction)
 One explainable text approach
 One approach which relies on text perplexity measuring
+[Presentation slides](https://www.slideshare.net/AlisonReboud/eurecom-and-aalto-university-at-mediaeval-2021)
 
 ## 2020 MeMAD's approach
 
