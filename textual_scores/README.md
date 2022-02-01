@@ -1,5 +1,8 @@
 # MediaEval Memorability Challenge
-
+## mediaeval_memorability_2021.py 
+The script for the experiments we run for the MeMAD Memorability Challenge 2020 to evaluate the different models for the text modality.
+Usage is similar to the 2020 edition (below). 
+The text embeddings of the different datasets are saved under 
 
 ## mediaeval_memorability_2020.py
 The script for the experiments we run for the MeMAD Memorability Challenge 2020 to evaluate the different models for the text modality.
