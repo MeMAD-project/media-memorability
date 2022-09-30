@@ -21,7 +21,7 @@ idna==2.10
 imageio==2.9.0
 importlib-metadata==2.0.0
 jmespath==0.10.0
-joblib==0.17.0
+joblib==1.2.0
 json-lines==0.5.0
 jsonlines==1.2.0
 Keras-Applications==1.0.8
