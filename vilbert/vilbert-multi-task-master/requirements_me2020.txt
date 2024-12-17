@@ -75,7 +75,7 @@ torch==1.6.0
 torchvision==0.5.0
 tqdm==4.31.1
 transformers==3.3.1
-urllib3==1.25.10
+urllib3==1.26.5
 Werkzeug==1.0.1
 wrapt==1.12.1
 yacs==0.1.8
